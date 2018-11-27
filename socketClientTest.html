@@ -1,0 +1,70 @@
+<html>
+<script src="./socketClient.min.js"></script>
+<h1>Hi</h1>
+<script>
+var socketClient = new SocketClient({
+	"port":5050,
+	"authorization":"somesecretkey",
+	"socketDisconnect":function(res){
+		console.log("Socket disconnect",res);
+	},
+	"socketConnect":function(res){
+		console.log("Socket connected");
+		
+	}
+});
+var config={
+	"events":{
+		"message":function(res){
+			console.log("Received this on message channel",res);
+		},
+		"dogs":function(res){
+			console.log("Received this on dogs channel",res);
+			//callback({"message":"dogs channel received by client"});
+		}
+	},
+	
+}
+socketClient.setConfig(config);
+setTimeout(function(){
+	console.log("Sending a message to cats");
+	socketClient.sendMessage({"channel":"cats","message":{"data":"key"}},function(res){
+		console.log("Received this message back:");
+		console.log(res);
+	});
+},1000);
+</script>
+<script>
+var socketClient2 = new SocketClient({
+	"port":5050,
+	"authorization":"somesecretkey2",
+	"socketDisconnect":function(res){
+		console.log("2Socket disconnect",res);
+	},
+	"socketConnect":function(res){
+		console.log("2Socket connected");
+		
+	}
+});
+var config2={
+	"events":{
+		"message":function(res){
+			console.log("2Received this on message channel",res);
+		},
+		"dogs":function(res){
+			console.log("2Received this on dogs channel",res);
+			//callback({"message":"dogs channel received by client"});
+		}
+	},
+	
+}
+socketClient2.setConfig(config2);
+setTimeout(function(){
+	console.log("2Sending a message to cats");
+	socketClient2.sendMessage({"channel":"cats","message":{"data":"key"}},function(res){
+		console.log("2Received this message back:");
+		console.log(res);
+	});
+},1000);
+</script>
+</html>
