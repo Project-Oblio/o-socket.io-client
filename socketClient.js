@@ -1,5 +1,5 @@
 var socketClient = function(config){
-	var host = config.host || "http://localhost:"+config.port
+	var host = config.url || config.host+":"+config.port || "http://localhost:"+config.port
 	console.log(host);
 	var io = require('socket.io-client');
 	var socket = io.connect(host,{
@@ -9,7 +9,7 @@ var socketClient = function(config){
 	this.config=config || {};
 	socket.on('connect', function(){
 		socket.emit("auth",{"auth":config.authorization},function(res){
-			if(!res.user){
+			if(!res.username && !res.id){
 				console.log("Couldn't authorize with socket");
 			}
 			else{
