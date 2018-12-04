@@ -9,6 +9,7 @@ var socketClient = function(config){
 	this.config=config || {};
 	socket.on('connect', function(){
 		socket.emit("auth",{"auth":config.authorization},function(res){
+			console.log("Recieved this res",res);
 			if(!res.username && !res.id){
 				console.log("Couldn't authorize with socket");
 			}
