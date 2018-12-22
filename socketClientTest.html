@@ -3,8 +3,9 @@
 <h1>Hi</h1>
 <script>
 var socketClient = new SocketClient({
-	"port":5050,
-	"authorization":"somesecretkey",
+	"url":"http://localhost:6002",
+	"authorization":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjE2MiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDAwL2FwaS9sb2dpbi9yZW1vdGUiLCJpYXQiOjE1NDUyNjQzNzYsImV4cCI6MTU0NTg2OTE3NiwibmJmIjoxNTQ1MjY0Mzc2LCJqdGkiOiI2VFNTb0IwTzhXcVVHTHRSIn0.v_ckJpAn2PcIZ2mx-tqvy5LJRtwG__YuOlAcFRgMI8A",
+	"fingerprint":"fingerprint",
 	"socketDisconnect":function(res){
 		console.log("Socket disconnect",res);
 	},

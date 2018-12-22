@@ -17,6 +17,7 @@ var socketClient = function(config){
 				_this.config[key]=config[key]
 			}
 		}
+		
 		_this.updateEvents();
 	}
 
@@ -39,9 +40,11 @@ var socketClient = function(config){
 			reconnect:true,
 		});
 		_this.socket.on('connect', function(){
-			_this.socket.emit("auth",{"auth":_this.config.authorization},function(res){
-				if(!res.username && !res.id){
-					console.log("Couldn't authorize with socket");
+			console.log("beginning to socket connect");
+			_this.socket.emit("auth",{"auth":config.authorization,"fingerprint":config.fingerprint},function(res){
+				if(!res.id){
+					console.log("Couldn't authorize with socket, disconnecting",res);
+					
 				}
 				else{
 					console.log("Authorized as user: " + JSON.stringify(res));
