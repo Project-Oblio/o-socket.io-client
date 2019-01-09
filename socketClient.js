@@ -1,6 +1,7 @@
 var socketClient = function(config){
 	var _this=this;
 	this.socket;
+	this.ready=false;
 	this.io = require('socket.io-client');
 	this.config=config || {};
 	this.setConfig=function(config){
@@ -28,6 +29,12 @@ var socketClient = function(config){
 			});
 		}
 	}
+	this.addEvent=function(message,callback){
+		var channel = message.key || message.channel;
+		if(typeof channel=="undefined")console.error("Please specify message or channel in thing");
+		_this.config.events[message.key]=callback;
+		_this.updateEvents();
+	}
 	this.sendMessage=function(message,callback){
 		var channel = message.channel;
 		if(typeof message.channel=="undefined")channel="message";
@@ -41,7 +48,11 @@ var socketClient = function(config){
 		});
 		_this.socket.on('connect', function(){
 			console.log("beginning to socket connect");
-			_this.socket.emit("auth",{"auth":config.authorization,"fingerprint":config.fingerprint},function(res){
+			var message={"auth":config.authorization,"fingerprint":config.fingerprint};
+			if(_this.config.onConnect!="undefined"){
+				message.onConnect=_this.config.onConnect;
+			}
+			_this.socket.emit("auth",message,function(res){
 				if(!res.id){
 					console.log("Couldn't authorize with socket, disconnecting",res);
 					
@@ -49,6 +60,7 @@ var socketClient = function(config){
 				else{
 					console.log("Authorized as user: " + JSON.stringify(res));
 					_this.config.socketConnect(res);
+					_this.ready=true;
 				}
 			})
 		});
@@ -75,6 +87,19 @@ var socketClient = function(config){
 		},
 		"socketDisconnect":function(res){
 			console.log("Socket disconnect",res);
+		}
+	}
+	function resolveAfterSeconds(seconds) { 
+	  return new Promise(resolve => {
+	    setTimeout(() => {
+	      resolve();
+	    }, seconds*1000);
+	  });
+	}
+	this.awaitSocket = async function (){
+		while(!_this.ready){
+			console.log("Awaiting socket");
+			await resolveAfterSeconds(1);
 		}
 	}
 	if(typeof config!="undefined")this.setConfig(config);
