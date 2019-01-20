@@ -96,10 +96,24 @@ var socketClient = function(config){
 	    }, seconds*1000);
 	  });
 	}
-	this.awaitSocket = async function (){
-		while(!_this.ready){
-			console.log("Awaiting socket");
-			await resolveAfterSeconds(1);
+	this.readyCallbacks=[];
+	this.waiting=false;
+	this.awaitSocket = async function (callback){
+		if(!_this.waiting){
+			_this.waiting=true
+			while(!_this.ready){
+				console.log("Awaiting socket");
+				await resolveAfterSeconds(1.5);
+			}
+			for(var x=0; x < _this.readyCallbacks.length; x++){
+				_this.readyCallbacks[x]();
+			}
+		}else{
+			if(typeof callback!="undefined"){
+				if(_this.ready){
+					callback();
+				}else _this.readyCallbacks.push(callback);
+			}
 		}
 	}
 	if(typeof config!="undefined")this.setConfig(config);
