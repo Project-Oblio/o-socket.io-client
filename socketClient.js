@@ -90,8 +90,8 @@ var socketClient = function(config){
 		}
 	}
 	function resolveAfterSeconds(seconds) { 
-	  return new Promise(resolve => {
-	    setTimeout(() => {
+	  return new Promise(function(resolve){
+	    setTimeout(function(){
 	      resolve();
 	    }, seconds*1000);
 	  });
