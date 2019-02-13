@@ -55,7 +55,7 @@ var socketClient = function(config){
 			_this.socket.emit("auth",message,function(res){
 				if(!res.id){
 					console.log("Couldn't authorize with socket, disconnecting",res);
-					
+					_this.config.socketConnect(res);
 				}
 				else{
 					console.log("Authorized as user: " + JSON.stringify(res));
